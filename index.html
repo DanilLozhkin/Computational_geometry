@@ -15,20 +15,44 @@
             overflow: hidden;
         }
 
-        #renderCanvas {
+        #canvas {
             width: 100%;
             height: 100%;
         }
     </style>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
 
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+
 </head>
 
 <body>
+    <h1>Куб грань</h1>
 
-    <canvas id="renderCanvas"></canvas>
+    <form id='form'>
+        
+        <fieldset>
+            <legend>Управление</legend>
+            <div class="div_1">
+                <p>куб ширь</p>
+                <label><input value="1" id="x"></label>
+                <p>куб высь</p>
+                <label><input value="1" id="y"></label>
+                <p>куб выпуклость</p>
+                <label><input value="1" id="z"></label>
 
-    <script src="main.js"></script>
+            </div>
+
+            <button type="submit" id="submit">отправить</button>
+        </fieldset>
+    </form>
+
+    
+    <canvas id="canvas"></canvas>
+
+    <script  src="/js/Cub.js"></script>
+
+
 
 </body>
 
