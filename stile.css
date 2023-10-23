@@ -1,0 +1,18 @@
+
+:root {
+    font-size: 62.5%;
+    letter-spacing: 0.2px;
+    font-family: 'Montserrat', sans-serif;
+    --primary-color: #252B42;
+    box-sizing: border-box;
+}
+
+*,
+::after,
+::before {
+    box-sizing: inherit;
+}
+
+.Levt{
+    display: flex;
+}
