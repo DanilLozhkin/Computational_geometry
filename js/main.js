@@ -35,10 +35,10 @@ const createScene = function () {
             });
     */
 
-    /* Загрузите звук и воспроизведите его автоматически, как только он будет готов.
-        const sound  = new BABYLON.Sound("cello", "ресурсы/nautilus_pompilius____butusov_vyacheslav - skovannyie_odnoy_tsepyu.mp3", scene, null, { loop: true, autoplay: true });
+    //Загрузите звук и воспроизведите его автоматически, как только он будет готов.
+        const sound  = new BABYLON.Sound("cello", "/resurs/nautilus_pompilius____butusov_vyacheslav - skovannyie_odnoy_tsepyu.mp3", scene, null, { loop: true, autoplay: true });
         sound.play();
-    */
+    
 
     /* куб до 2.1
             //куб с дефолтным значением и без присваивания

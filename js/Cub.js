@@ -13,10 +13,12 @@ const createScene = async function () {
   const groundMat = new BABYLON.StandardMaterial("groundMat");
   groundMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
 
-  const result = await BABYLON.SceneLoader.ImportMeshAsync("", "resurs/", "untitled.glb", newScene);
+  const result = await BABYLON.SceneLoader.ImportMeshAsync("", "../resurs/", "untitled.glb", newScene);
 
   result.material = groundMat;
-  result.meshes[0].scaling = new BABYLON.Vector3(x.value, y.value, z.value);
+  result.meshes[0].scaling = new BABYLON.Vector3(x_s.value, y_s.value, z_s.value);
+
+  result.meshes[0].position = new BABYLON.Vector3(x.value, y.value, z.value);
   //result.scaling = new BABYLON.Vector3(2, 1.5, 3);
 
   scene = newScene; // Присваиваем созданную сцену переменной scene

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon Template</title>
+    <link rel="stylesheet" href="../stile.css">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+
+</head>
+
+<body>
+    <h1>Куб грань</h1>
+    <div class="Levt">
+        <form id='form'>
+
+            <a href="../index.html">Ресурс 1</a>
+            <a href="./index_3.html">Ресурс 3</a>
+
+            <fieldset>
+                <legend>Управление размером</legend>
+                <div class="div_1">
+                    <p>куб ширь</p>
+                    <label><input type="range" value="1" id="x_s"></label>          
+                    <p>куб высь</p>
+                    <label><input type="range" value="1" id="y_s"></label>
+                    <p>куб выпуклость</p>
+                    <label><input type="range" value="1" id="z_s"></label>
+                </div>
+
+                <button type="submit" id="submit">отправить</button>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Управление позицией</legend>
+                <div class="div_1">
+                    <p>X</p>
+                    <label><input type="range" value="1" id="x"></label>          
+                    <p>Y</p>
+                    <label><input type="range" value="1" id="y"></label>
+                    <p>Z</p>
+                    <label><input type="range" value="1" id="z"></label>
+                </div>
+
+                <button type="submit" id="submit">отправить</button>
+            </fieldset>
+
+
+        </form>
+
+
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script src="../js/Cub.js"></script>
+
+</body>
+
+</html>

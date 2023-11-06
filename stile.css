@@ -16,3 +16,9 @@
 .Levt{
     display: flex;
 }
+
+a{
+    margin-left: 15px;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
