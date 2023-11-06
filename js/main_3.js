@@ -1,54 +1,59 @@
 const canvas = document.getElementById("canvas");
 const engine = new BABYLON.Engine(canvas, true);
 let scene;
+const e = Math.E;
+const pi = Math.PI;
 
 function computeIntegral(t) {
-    const e = Math.E;
-    
-    func = t => e ** (t ** 2 / 2);
-    const h = (t - 0) / 10000; // Ширина каждого интервала
-    let integral = 0;
+    const n = 100000;
+    let sum = 0;
 
-    for (let i = 0; i < 10000; i++) {
-        const x1 = 0 + i * h; // Левая граница интервала
-        const x2 = 0 + (i + 1) * h; // Правая граница интервала
-        const y = func((x1 + x2) / 2); // Среднее значение функции на интервале
-        integral += y * h; // Площадь прямоугольника
+    const dx = (t - 0) / n;
+    const f = t => e ** (-(t ** 2) / 2);
+
+    for (let i = 0; i < n; i++) {
+        const x1 = 0 + i * dx;
+        const x2 = x1 + dx;
+        const y = f((x1 + x2) / 2);
+        sum += y * dx;
     }
 
-    return integral;
+    return ((1 / Math.sqrt(2 * pi)) * sum);
 }
 
 const Main = function (es, ei, x, σ) {
-    // Здесь вы можете использовать параметры es, ei, x и σ для вычисления нового графика
-    // Например, вы можете пересоздать график функции с использованием новых параметров
-    const pi = Math.PI;
-    var points = [];
-    // for (var x = -5; x <= 5; x += 0.1) {
-    //     var y = es * Math.exp((x - x) / σ) + ei;
-    //     points.push(new BABYLON.Vector3(x, y, 0));
-    // }
 
     var t2 = (es - x) / σ;
     var t1 = (ei - x) / σ;
-    var integ = (1 / Math.sqrt(2 * pi)) * computeIntegral(t2);
-    console.log(integ);
-    console.log(es, ei, x, σ);
-    var graph = BABYLON.Mesh.CreateLines("graph", points, scene);
+    var P = computeIntegral(t2) - computeIntegral(t1);
+    console.log(`${P * 100}% - годных деталей`);
+
+    var t2_2 = t1;
+    var t1_2 = -3;
+    P = computeIntegral(t2_2) - computeIntegral(t1_2);
+    console.log(`${P * 100}% - неисправимого брака`);
+
+    var t2_3 = 3;
+    var t1_3 = t2;
+    P = computeIntegral(t2_3) - computeIntegral(t1_3);
+    console.log(`${P * 100}% - исправимого брака`);
 };
 
 const createScene = function () {
+
     // Создание сцены
     const newScene = new BABYLON.Scene(engine);
     scene = newScene; // Присваиваем созданную сцену переменной scene
 
     // Создание камеры
     var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2, 10, BABYLON.Vector3.Zero(), scene);
+    camera.target = new BABYLON.Vector3(0, 3, 0);
 
     camera.attachControl(canvas, true);
+
     // Создание осей координат
-    var axisX = BABYLON.Mesh.CreateLines("axisX", [BABYLON.Vector3.Zero(), new BABYLON.Vector3(5, 0, 0)], scene);
-    var axisY = BABYLON.Mesh.CreateLines("axisY", [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 5, 0)], scene);
+    var axisX = BABYLON.Mesh.CreateLines("axisX", [BABYLON.Vector3.Zero(), new BABYLON.Vector3(10, 0, 0)], scene);
+    var axisY = BABYLON.Mesh.CreateLines("axisY", [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 10, 0)], scene);
 
     axisX.color = new BABYLON.Color3(1, 0, 0);
     axisY.color = new BABYLON.Color3(0, 1, 0);
@@ -56,34 +61,50 @@ const createScene = function () {
     const form = document.getElementById("form");
     var es = parseFloat(form.elements.es.value);
     var ei = parseFloat(form.elements.ei.value);
-    var x = parseFloat(form.elements.x.value);
+    var xa = parseFloat(form.elements.x.value);
     var σ = parseFloat(form.elements.σ.value);
+    var X_w = parseFloat(form.elements.X_w.value);
+    var Y_w = parseFloat(form.elements.Y_w.value);
 
-    Main(es, ei, x, σ);
+    // Создание вертикальной линии для ei
+    var axisei = BABYLON.Mesh.CreateLines("axisei", [
+        new BABYLON.Vector3(ei / X_w, 0, 0),
+        new BABYLON.Vector3(ei / X_w, 10, 0)
+    ], scene);
+    axisei.color = new BABYLON.Color3(1, 1, 0);
 
-    // Создание графика функции y = x^2
+    // Создание вертикальной линии для es
+    var axises = BABYLON.Mesh.CreateLines("axises", [
+        new BABYLON.Vector3(es / X_w, 0, 0),
+        new BABYLON.Vector3(es / X_w, 10, 0)
+    ], scene);
+    axises.color = new BABYLON.Color3(1, 1, 0);
+
+    Main(es, ei, xa, σ);
+
     var points = [];
-    for (var x = -5; x <= 5; x += 0.1) {
-        var y = x * x;
-        points.push(new BABYLON.Vector3(x, y, 0));
+    for (var x = -5; x <= 5; x += 0.001) {
+        var y = (1 / (σ * Math.sqrt(2 * pi))) * (e ** -(((x - xa) ** 2) / (2 * σ ** 2)));
+        points.push(new BABYLON.Vector3(x / X_w, y / Y_w, 0));
     }
     var graph = BABYLON.Mesh.CreateLines("graph", points, scene);
+
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
 };
 
 window.addEventListener("resize", function () {
     engine.resize();
 });
 
-createScene(); // Вызываем функцию createScene для создания сцены
-
-// Регистрируем цикл рендеринга для многократного рендеринга сцены
-engine.runRenderLoop(function () {
-    scene.render();
-});
-
-
+const form = document.getElementById("form");
 form.addEventListener('submit', (event) => {
     event.preventDefault();
-    // Получите значения из формы и передайте их в функцию Main для обновления графика
 
+    // Перезапускаем создание сцены при изменении параметров
+    if (scene) {
+        scene.dispose();
+    }
+    createScene();
 });
