@@ -23,20 +23,21 @@ function computeIntegral(t) {
 
 const Main = function (es, ei, x, σ) {
 
+    var P = [];
+
     var t2 = (es - x) / σ;
     var t1 = (ei - x) / σ;
-    var P = computeIntegral(t2) - computeIntegral(t1);
-    console.log(`${P * 100}% - годных деталей`);
-
+    P[0] = (computeIntegral(t2) - computeIntegral(t1)) * 100;
+ 
     var t2_2 = t1;
     var t1_2 = -3;
-    P = computeIntegral(t2_2) - computeIntegral(t1_2);
-    console.log(`${P * 100}% - неисправимого брака`);
+    P[1] = (computeIntegral(t2_2) - computeIntegral(t1_2)) * 100;
 
     var t2_3 = 3;
     var t1_3 = t2;
-    P = computeIntegral(t2_3) - computeIntegral(t1_3);
-    console.log(`${P * 100}% - исправимого брака`);
+    P[2] = (computeIntegral(t2_3) - computeIntegral(t1_3)) * 100;
+
+    return P
 };
 
 const createScene = function () {
@@ -65,6 +66,9 @@ const createScene = function () {
     var σ = parseFloat(form.elements.σ.value);
     var X_w = parseFloat(form.elements.X_w.value);
     var Y_w = parseFloat(form.elements.Y_w.value);
+    let Good = document.getElementById('Good');
+    let notGood = document.getElementById('notGood');
+    let MaybeGood = document.getElementById('MaybeGood');
 
     // Создание вертикальной линии для ei
     var axisei = BABYLON.Mesh.CreateLines("axisei", [
@@ -80,14 +84,33 @@ const createScene = function () {
     ], scene);
     axises.color = new BABYLON.Color3(1, 1, 0);
 
-    Main(es, ei, xa, σ);
+    var P = Main(es, ei, xa, σ);
 
+    Good.innerHTML = `${P[0].toFixed(3)}% - годных деталей.`;
+    notGood.innerHTML = `${P[1].toFixed(3)}% - неисправимого брака.`;
+    MaybeGood.innerHTML = `${P[2].toFixed(3)}% - исправимого брака.`;
+
+    var obl_1 = [];
+    var obl_2 = [];
     var points = [];
-    for (var x = -5; x <= 5; x += 0.001) {
+    for (var x = -5; x <= 5; x += 0.0001) {
         var y = (1 / (σ * Math.sqrt(2 * pi))) * (e ** -(((x - xa) ** 2) / (2 * σ ** 2)));
         points.push(new BABYLON.Vector3(x / X_w, y / Y_w, 0));
+
+        if (x > 0 && y > 0 && x < ei) {
+            for(var s = 0; s < y; s +=0.01){
+                obl_1.push(new BABYLON.Vector3(x / X_w, s / Y_w, 0));
+            }
+        }
+        if (x > 0 && y > 0 && es<x) {
+            for(var s = 0; s < y; s +=0.01){
+                obl_2.push(new BABYLON.Vector3(x / X_w, s / Y_w, 0));
+            }
+        }
     }
     var graph = BABYLON.Mesh.CreateLines("graph", points, scene);
+    var graph_obl_1 = BABYLON.Mesh.CreateLines("graph", obl_1, scene);
+    var graph_obl_2 = BABYLON.Mesh.CreateLines("graph", obl_2, scene);
 
     engine.runRenderLoop(function () {
         scene.render();
